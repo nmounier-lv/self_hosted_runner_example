@@ -1,7 +1,11 @@
-name: learn-github-actions
+name: Check tf installed
 on: [push]
 jobs:
   my-job:
     runs-on: self-hosted
     steps:
-      - run: echo Allooo
+      - run: echo Starting the runner
+      - run: terraform version
+      # - uses: hashicorp/setup-terraform@v3
+      #   with:
+      #     terraform_version: "1.1.7"

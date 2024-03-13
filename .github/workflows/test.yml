@@ -1,0 +1,7 @@
+name: learn-github-actions
+on: [push]
+jobs:
+  my-job:
+    runs-on: self-hosted
+    steps:
+      - run: echo Allooo

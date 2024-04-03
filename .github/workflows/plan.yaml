@@ -1,0 +1,103 @@
+name: TF_PLAN
+
+# on:
+#   workflow_run:
+#     workflows:
+#       - TF_TESTS # Change this to the name of your development or default branch. You can add more that a branch
+#     types:
+#       - completed
+
+on:
+  push:
+    branches:
+      - master # Change this to the name of your development or default branch. You can add more that a branch
+  # pull_request:
+  #   branches:
+  #     - CHANGE_ME # to match names of branches availables on your repos
+  #   types:
+  #     - "closed"
+
+env:
+  TGENV_AUTO_INSTALL: true
+  TFENV_AUTO_INSTALL: true
+  # TF_GH_USER: ${{ secrets.TF_GH_USER }}
+  # TF_GH_PAT: ${{ secrets.TF_GH_PAT }}
+
+jobs:
+  TF_PLAN:
+    name: TF_PLAN | GENERATE TFPLAN FILE, VALIDATE & SAVE
+    # Run on Self-Runner developed and hosted by LV_NEO
+    runs-on: self-hosted
+
+    # this is needed since we are running terraform with read-only permissions
+    env:
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+    outputs:
+      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
+
+    steps:
+
+      # Checkout
+      - name: Checkout the repository from remote to local
+        uses: actions/checkout@v4
+
+      - name: tf init
+        run: terraform init -reconfigure
+
+      # TODO Log in GCP
+      # - name: Log in to GCP
+      #   uses:
+      #   with:
+      #     creds: '${{ secrets.TF_AZ_CREDS_PRJ }}'
+
+
+      # Generates an execution plan for Terraform
+      # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
+      - name: Terraform Plan
+        id: tf-plan
+        run: |
+          export exitcode=0
+          terraform plan --var-file=./poc/terraform.tfvars -detailed-exitcode -no-color -out tfplan || export exitcode=$?
+
+          echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+
+          if [ $exitcode -eq 1 ]; then
+            echo Terraform Plan Failed!
+            exit 1
+          else
+            exit 0
+          fi
+
+      # Save plan to artifacts
+      # - name: Upload Terraform Plan file (tfplan) to gh artifacts store
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: tfplan
+      #     path: tfplan
+
+      # Create string output of Terraform Plan
+      # - name: Create String Output
+      #   id: tf-plan-string
+      #   run: |
+      #     TERRAFORM_PLAN=$(terraform show -no-color tfplan)
+
+      #     delimiter="$(openssl rand -hex 8)"
+      #     echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+      #     echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
+      #     echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+      #     echo "" >> $GITHUB_OUTPUT
+      #     echo '```terraform' >> $GITHUB_OUTPUT
+      #     echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
+      #     echo '```' >> $GITHUB_OUTPUT
+      #     echo "</details>" >> $GITHUB_OUTPUT
+      #     echo "${delimiter}" >> $GITHUB_OUTPUT
+
+      # Publish Terraform Plan
+      # - name: Publish Terraform Plan output file (tfplan) to Task Summary
+      #   env:
+      #     SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
+      #   run: |
+      #     echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
+
+      # - name: Display structure of downloaded artifacts
+      #   run: terraform show -no-color tfplan

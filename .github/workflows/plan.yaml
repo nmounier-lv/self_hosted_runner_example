@@ -70,7 +70,7 @@ jobs:
 
       # Save plan to artifacts
       - name: Upload Terraform Plan file (tfplan) to gh artifacts store
-        uses: actions/upload-artifact@v3node20
+        uses: actions/upload-artifact@v3/node20
         with:
           name: tfplan
           path: tfplan

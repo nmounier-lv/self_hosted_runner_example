@@ -120,7 +120,7 @@ jobs:
       # - name: Terraform Init for downloading modules
       #   run: terraform init
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v3/node20
         with:
           name: tfplan
 

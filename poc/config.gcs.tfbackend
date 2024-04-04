@@ -1,0 +1,2 @@
+bucket = "lv-gcs-prj-test"
+prefix = "terraform/state/test_runner/poc"

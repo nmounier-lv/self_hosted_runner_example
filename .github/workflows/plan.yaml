@@ -42,9 +42,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: tf init
-        run: terraform init -reconfigure
+        run: terraform init -reconfigure -backend-config=poc/config.gcs.tfbackend
 
-      # TODO Log in GCP
+      # TODO Log in GCP once using container
       # - name: Log in to GCP
       #   uses:
       #   with:
@@ -70,7 +70,7 @@ jobs:
 
       # Save plan to artifacts
       - name: Upload Terraform Plan file (tfplan) to gh artifacts store
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3node20
         with:
           name: tfplan
           path: tfplan
@@ -101,3 +101,39 @@ jobs:
 
       # - name: Display structure of downloaded artifacts
       #   run: terraform show -no-color tfplan
+
+  
+  TF_APPLY:
+    name: 'TF_APPLY | APPLY SAVED TFPLAN'
+    needs: TF_PLAN
+    runs-on: self-hosted
+
+    outputs:
+      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
+
+    steps:
+
+      # Checkout
+      - name: Checkout the repository from remote to local
+        uses: actions/checkout@v4
+
+      # - name: Terraform Init for downloading modules
+      #   run: terraform init
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+
+      
+      - name: 'Test: check file presence'
+        run: ls -la
+
+      # TODO: log in GCP
+      # - name: Log in GCP
+      #   uses:
+      #   with:
+      #     creds: '${{ secrets.TF_AZ_CREDS_PRJ }}'
+
+
+      # - name: terraform apply -auto-approve
+      #   run: terraform apply --var-file=./poc/terraform.tfvars

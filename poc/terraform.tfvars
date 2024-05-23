@@ -3,6 +3,6 @@ environment = "poc"
 service_accounts = [
   {
     suffix                     = "test"
-    description                = "Service account"
+    description                = "Service account 2"
   },
 ]

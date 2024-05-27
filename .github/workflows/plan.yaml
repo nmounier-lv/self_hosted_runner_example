@@ -8,14 +8,22 @@ name: TF_PLAN
 #       - completed
 
 on:
-  push:
-    branches:
-      - master # Change this to the name of your development or default branch. You can add more that a branch
-  # pull_request:
-  #   branches:
-  #     - CHANGE_ME # to match names of branches availables on your repos
-  #   types:
-  #     - "closed"
+  workflow_call:
+    inputs:
+      config-path:
+        description: Relative path to the folder containing the tfvars file and backend config file
+        required: true
+        type: string
+      gh-env:
+        description: GH environment, used to enforce protection rules (e.g obligatory review of the plan before apply)
+        required: true
+        type: string
+        default: myenv
+
+# on:
+#   push:
+#     branches:
+#       - master # Change this to the name of your development or default branch. You can add more that a branch
 
 env:
   TGENV_AUTO_INSTALL: true
@@ -42,7 +50,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: tf init
-        run: terraform init -reconfigure -backend-config=poc/config.gcs.tfbackend
+        run: terraform init -reconfigure -backend-config=${{ inputs.config-path }}/config.gcs.tfbackend
       
       - name: 'Test: check wd content'
         run: ls -la
@@ -59,7 +67,7 @@ jobs:
         id: tf-plan
         run: |
           export exitcode=0
-          terraform plan --var-file=./poc/terraform.tfvars -detailed-exitcode -out tfplan || export exitcode=$?
+          terraform plan --var-file=./${{ inputs.config-path }}/terraform.tfvars -detailed-exitcode -out tfplan || export exitcode=$?
 
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
 
@@ -83,7 +91,7 @@ jobs:
   TF_APPLY:
     name: 'TF_APPLY | APPLY SAVED TFPLAN'
     needs: TF_PLAN
-    environment: myenv # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
+    environment: ${{ inputs.gh-env }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
     runs-on: self-hosted
 
     steps:
@@ -93,7 +101,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: tf init
-        run: terraform init -reconfigure -backend-config=poc/config.gcs.tfbackend
+        run: terraform init -reconfigure -backend-config=${{ inputs.config-path }}/config.gcs.tfbackend
 
       - name: 'Test: check wd content'
         run: ls -la

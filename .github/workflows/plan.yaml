@@ -77,11 +77,6 @@ jobs:
           name: tfplan
           path: tfplan
 
-      - name: 'Test: read tfplan exit code'
-        env:
-          OUTPUT1: ${{needs.tf-plan.outputs.tfplanExitCode}}
-        run: echo "$OUTPUT1"
-
       # Create string output of Terraform Plan
       # - name: Create String Output
       #   id: tf-plan-string
@@ -133,6 +128,11 @@ jobs:
       
       - name: 'Test: check file presence after download'
         run: ls -la
+
+      - name: 'Test: read tfplan exit code'
+        env:
+          OUTPUT1: ${{needs.TF_PLAN.outputs.tfplanExitCode}}
+        run: echo "$OUTPUT1"
 
       # TODO: log in GCP
       # - name: Log in GCP

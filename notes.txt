@@ -1,3 +1,8 @@
+09ee9bdffb5cc7fb4a920b288b14d0f90f23b762
+Each environment has a dedicated GH environment
+Fix:
+- one approval for one environment launch terraform apply for the given environment only
+
 895a1d5977a675be86adcd71b480893557d7fb84
 Fix:
 - one tfplan file is created and executed per environment

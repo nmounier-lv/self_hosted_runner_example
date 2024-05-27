@@ -1,11 +1,4 @@
-name: TF_PLAN
-
-# on:
-#   workflow_run:
-#     workflows:
-#       - TF_TESTS # Change this to the name of your development or default branch. You can add more that a branch
-#     types:
-#       - completed
+name: TF_EXECUTION
 
 on:
   workflow_call:
@@ -19,11 +12,6 @@ on:
         required: true
         type: string
         default: myenv
-
-# on:
-#   push:
-#     branches:
-#       - master # Change this to the name of your development or default branch. You can add more that a branch
 
 env:
   TGENV_AUTO_INSTALL: true
@@ -126,7 +114,3 @@ jobs:
       #   uses:
       #   with:
       #     creds: '${{ secrets.TF_AZ_CREDS_PRJ }}'
-
-
-      # - name: terraform apply -auto-approve
-      #   run: terraform apply --var-file=./poc/terraform.tfvars

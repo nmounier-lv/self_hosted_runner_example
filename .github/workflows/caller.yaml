@@ -1,4 +1,4 @@
-name: TF_POC
+name: TF_CALLER
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
       - feature/reusable-workflow
       - feature/reusable-workflow-matrix
 jobs:
-  call-workflow-terraform:
+  terraform:
     strategy:
       matrix:
         target:

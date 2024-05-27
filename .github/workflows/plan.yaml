@@ -108,6 +108,7 @@ jobs:
   TF_APPLY:
     name: 'TF_APPLY | APPLY SAVED TFPLAN'
     needs: TF_PLAN
+    environment: myenv
     runs-on: self-hosted
 
     steps:

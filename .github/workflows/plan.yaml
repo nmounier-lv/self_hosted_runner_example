@@ -43,6 +43,9 @@ jobs:
 
       - name: tf init
         run: terraform init -reconfigure -backend-config=poc/config.gcs.tfbackend
+      
+      - name: 'Test: check wd content'
+        run: ls -la
 
       # TODO Log in GCP once from the pod in the GKE cluster
       # - name: Log in to GCP
@@ -89,10 +92,10 @@ jobs:
       - name: Checkout the repository from remote to local
         uses: actions/checkout@v4
 
-      # - name: Terraform Init for downloading modules
-      #   run: terraform init
+      - name: tf init
+        run: terraform init -reconfigure -backend-config=poc/config.gcs.tfbackend
 
-      - name: 'Test: check wd content be4 dl the plan'
+      - name: 'Test: check wd content'
         run: ls -la
 
       - uses: actions/download-artifact@v3/node20

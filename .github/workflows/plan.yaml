@@ -62,7 +62,7 @@ jobs:
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
 
           echo "Exit code: $exitcode"
-          
+
           if [ $exitcode -eq 1 ]; then
             echo Terraform Plan Failed!
             exit 1
@@ -76,6 +76,11 @@ jobs:
         with:
           name: tfplan
           path: tfplan
+
+      - name: 'Test: read tfplan exit code'
+        env:
+          OUTPUT1: ${{needs.tf-plan.outputs.tfplanExitCode}}
+        run: echo "$OUTPUT1"
 
       # Create string output of Terraform Plan
       # - name: Create String Output
@@ -119,18 +124,15 @@ jobs:
       # - name: Terraform Init for downloading modules
       #   run: terraform init
 
+      - name: 'Test: check wd content be4 dl'
+        run: ls -la
+
       - uses: actions/download-artifact@v3/node20
         with:
           name: tfplan
-
       
-      - name: 'Test: check file presence'
+      - name: 'Test: check file presence after download'
         run: ls -la
-
-      - name: 'Test: plan success'
-        env:
-          OUTPUT1: ${{needs.tf-plan.outputs.tfplanExitCode}}
-        run: echo "$OUTPUT1"
 
       # TODO: log in GCP
       # - name: Log in GCP

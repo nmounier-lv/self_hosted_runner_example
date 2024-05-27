@@ -13,7 +13,7 @@ jobs:
             config-path: poc
           - gh-env: myenv
             config-path: dev
-    uses: ./.github/workflows/plan.yaml
+    uses: ./.github/workflows/shared.yaml
     with:
       config-path: ${{ matrix.target.config-path }}
       gh-env:  ${{ matrix.target.gh-env }}

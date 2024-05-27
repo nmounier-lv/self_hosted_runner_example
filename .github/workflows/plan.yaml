@@ -55,6 +55,8 @@ jobs:
       # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
       - name: Terraform Plan
         id: tf-plan
+        outputs:
+          tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
         run: |
           export exitcode=0
           terraform plan --var-file=./poc/terraform.tfvars -detailed-exitcode -out tfplan || export exitcode=$?
@@ -108,9 +110,6 @@ jobs:
     needs: TF_PLAN
     runs-on: self-hosted
 
-    outputs:
-      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
-
     steps:
 
       # Checkout
@@ -127,6 +126,11 @@ jobs:
       
       - name: 'Test: check file presence'
         run: ls -la
+
+      - name: 'Test: plan success'
+        env:
+          OUTPUT1: ${{needs.tf-plan.outputs.tfplanExitCode}}
+        run: echo "$OUTPUT1"
 
       # TODO: log in GCP
       # - name: Log in GCP

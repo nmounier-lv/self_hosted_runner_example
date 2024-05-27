@@ -1,0 +1,4 @@
+73975dd9ab83d741c2af9bc593df1e4fca78e3ee
+Use of matrix to easily create deployments for each environments.
+Issue: only one tfplan is created, so you execute the same tfplan for each environment...
+

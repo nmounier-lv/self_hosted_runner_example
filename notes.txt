@@ -1,3 +1,10 @@
+a14b1d641afb08d3d2288108d23f8c7342c18d24
+Replace the use of a matrix with hard coded workflow per environment.
+It creates one workflow per environment.
+You can approve only one environment.
+Disadvantages:
+- not everything is in the same UI/page, as we create one workflow per environment.
+
 895a1d5977a675be86adcd71b480893557d7fb84
 Fix:
 - one tfplan file is created and executed per environment

@@ -67,7 +67,7 @@ jobs:
         id: tf-plan
         run: |
           export exitcode=0
-          terraform plan --var-file=./${{ inputs.config-path }}/terraform.tfvars -detailed-exitcode -out tfplan || export exitcode=$?
+          terraform plan --var-file=./${{ inputs.config-path }}/terraform.tfvars -detailed-exitcode -out ${{ inputs.config-path }}/tfplan || export exitcode=$?
 
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
 
@@ -84,8 +84,8 @@ jobs:
       - name: Upload Terraform Plan file (tfplan) to gh artifacts store
         uses: actions/upload-artifact@v3/node20
         with:
-          name: tfplan
-          path: tfplan
+          name: ${{ inputs.config-path }}-tfplan
+          path: ${{ inputs.config-path }}/tfplan
 
 
   TF_APPLY:
@@ -108,7 +108,7 @@ jobs:
 
       - uses: actions/download-artifact@v3/node20
         with:
-          name: tfplan
+          name: ${{ inputs.config-path }}-tfplan
       
       - name: 'Test: check file presence after download'
         run: ls -la

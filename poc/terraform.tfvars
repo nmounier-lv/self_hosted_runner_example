@@ -5,8 +5,4 @@ service_accounts = [
     suffix                     = "test"
     description                = "Service account 2"
   },
-  {
-    suffix                     = "test-3"
-    description                = "Service account 3"
-  },
 ]

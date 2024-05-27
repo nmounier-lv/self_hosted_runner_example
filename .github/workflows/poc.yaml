@@ -1,0 +1,12 @@
+name: POC
+on:
+  push:
+    branches:
+      - master
+      - feature/reusable-workflow
+jobs:
+  call-workflow-terraform:
+    uses: ./.github/workflows/shared.yaml
+    with:
+      config-path: poc
+      gh-env:  myenv

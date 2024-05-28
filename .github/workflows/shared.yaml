@@ -17,8 +17,9 @@ env:
   # TF_GH_PAT: ${{ secrets.TF_GH_PAT }}
 
 jobs:
+  # TF_PLAN | GENERATE TFPLAN FILE, VALIDATE & SAVE
   TF_PLAN:
-    name: TF_PLAN | GENERATE TFPLAN FILE, VALIDATE & SAVE
+    name: plan
     # Run on Self-Runner developed and hosted by LV_NEO
     runs-on: self-hosted
 
@@ -73,8 +74,9 @@ jobs:
           path: ${{ inputs.environment }}/tfplan
 
 
+  # TF_APPLY | APPLY SAVED TFPLAN
   TF_APPLY:
-    name: 'TF_APPLY | APPLY SAVED TFPLAN'
+    name: apply
     needs: TF_PLAN
     environment: ${{ inputs.environment }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
     runs-on: self-hosted

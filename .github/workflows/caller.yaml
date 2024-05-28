@@ -1,10 +1,20 @@
 name: TF_CALLER
 on:
-  push:
-    branches:
-      - master
-      - feature/reusable-workflow
-      - feature/reusable-workflow-matrix
+  workflow_dispatch:
+    # TODO path to the data product for which we wish to launch the pipeline
+    inputs:
+      dummy:
+        description: 'Seems inputs are mandatory'
+        type: string
+      
+
+# Uncomment to automatically create workflow on each push
+# on:
+#   push:
+#     branches:
+#       - master
+#       - feature/reusable-workflow
+#       - feature/reusable-workflow-matrix
 jobs:
   terraform:
     strategy:

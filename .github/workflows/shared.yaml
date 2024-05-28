@@ -6,6 +6,13 @@ on:
     # same repository
     inputs:
 
+# Uncomment to automatically create workflow on each push
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+
 # on:
 #   workflow_call:
 #     inputs:

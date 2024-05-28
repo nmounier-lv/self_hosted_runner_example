@@ -30,8 +30,9 @@ on:
 #   TF_GH_PAT: ${{ secrets.TF_GH_PAT }}
 
 jobs:
+  # TF_PLAN | GENERATE TFPLAN FILE, VALIDATE & SAVE
   TF_PLAN:
-    name: TF_PLAN | GENERATE TFPLAN FILE, VALIDATE & SAVE
+    name: plan
     strategy:
       matrix:
         environment: [poc, dev]
@@ -88,9 +89,9 @@ jobs:
           name: ${{ matrix.environment }}-tfplan
           path: ${{ matrix.environment }}/tfplan
 
-
+  # TF_APPLY | APPLY SAVED TFPLAN
   TF_APPLY:
-    name: 'TF_APPLY | APPLY SAVED TFPLAN'
+    name: apply
     strategy:
       matrix:
         environment: [poc, dev]

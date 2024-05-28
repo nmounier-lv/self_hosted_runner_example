@@ -15,21 +15,21 @@ on:
       - master
       - feature/*
 jobs:
-  plan dev:
+  plan_dev:
     uses: ./.github/workflows/plan.yaml
     with:
       environment: dev
-  apply dev:
+  apply_dev:
     uses: ./.github/workflows/apply.yaml
-    needs: plan dev
+    needs: plan_dev
     with:
       environment: dev
-  plan poc:
+  plan_poc:
     uses: ./.github/workflows/plan.yaml
     with:
       environment: poc
-  apply poc:
+  apply_poc:
     uses: ./.github/workflows/apply.yaml
-    needs: plan poc
+    needs: plan_poc
     with:
       environment: poc

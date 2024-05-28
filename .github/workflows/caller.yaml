@@ -2,7 +2,11 @@ name: TF_CALLER
 on:
   workflow_dispatch:
     # TODO path to the data product for which we wish to launch the pipeline
-    # inputs:
+    inputs:
+      dummy:
+        description: 'Seems inputs are mandatory'
+        type: string
+      
 
 # Uncomment to automatically create workflow on each push
 # on:

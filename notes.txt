@@ -1,3 +1,8 @@
+v0.0.1
+Each environment has a dedicated GH environment.
+Github environment and relative path to tfvars file and backend configuration
+are provided with the same environment.
+
 09ee9bdffb5cc7fb4a920b288b14d0f90f23b762
 Each environment has a dedicated GH environment
 Fix:

@@ -11,10 +11,11 @@ on:
         required: true
         type: string
 
+jobs:
   # TF_APPLY | APPLY SAVED TFPLAN
   TF_APPLY:
     name: apply
-    needs: TF_PLAN
+    # needs: TF_PLAN
     environment: ${{ inputs.environment }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
     runs-on: self-hosted
 

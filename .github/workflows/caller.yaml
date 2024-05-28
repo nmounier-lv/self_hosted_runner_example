@@ -10,10 +10,7 @@ jobs:
     strategy:
       matrix:
         target:
-          - gh-env: poc
-            config-path: poc
-          - gh-env: dev
-            config-path: dev
+          - environment: [poc, dev]
     uses: ./.github/workflows/shared.yaml
     with:
       config-path: ${{ matrix.target.config-path }}

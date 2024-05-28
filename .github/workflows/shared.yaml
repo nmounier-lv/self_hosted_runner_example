@@ -3,15 +3,12 @@ name: TF_EXECUTION
 on:
   workflow_call:
     inputs:
-      config-path:
-        description: Relative path to the folder containing the tfvars file and backend config file
+      environment:
+        description: |
+          Environment: relative path to the folder containing the tfvars file and
+          backend config file, and GH environment in the repository
         required: true
         type: string
-      gh-env:
-        description: GH environment, used to enforce protection rules (e.g obligatory review of the plan before apply)
-        required: true
-        type: string
-        default: myenv
 
 env:
   TGENV_AUTO_INSTALL: true
@@ -38,7 +35,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: tf init
-        run: terraform init -reconfigure -backend-config=${{ inputs.config-path }}/config.gcs.tfbackend
+        run: terraform init -reconfigure -backend-config=${{ inputs.environment }}/config.gcs.tfbackend
       
       - name: 'Test: check wd content'
         run: ls -la
@@ -55,7 +52,7 @@ jobs:
         id: tf-plan
         run: |
           export exitcode=0
-          terraform plan --var-file=./${{ inputs.config-path }}/terraform.tfvars -detailed-exitcode -out ${{ inputs.config-path }}/tfplan || export exitcode=$?
+          terraform plan --var-file=./${{ inputs.environment }}/terraform.tfvars -detailed-exitcode -out ${{ inputs.environment }}/tfplan || export exitcode=$?
 
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
 
@@ -72,14 +69,14 @@ jobs:
       - name: Upload Terraform Plan file (tfplan) to gh artifacts store
         uses: actions/upload-artifact@v3/node20
         with:
-          name: ${{ inputs.config-path }}-tfplan
-          path: ${{ inputs.config-path }}/tfplan
+          name: ${{ inputs.environment }}-tfplan
+          path: ${{ inputs.environment }}/tfplan
 
 
   TF_APPLY:
     name: 'TF_APPLY | APPLY SAVED TFPLAN'
     needs: TF_PLAN
-    environment: ${{ inputs.gh-env }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
+    environment: ${{ inputs.environment }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
     runs-on: self-hosted
 
     steps:
@@ -89,14 +86,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: tf init
-        run: terraform init -reconfigure -backend-config=${{ inputs.config-path }}/config.gcs.tfbackend
+        run: terraform init -reconfigure -backend-config=${{ inputs.environment }}/config.gcs.tfbackend
 
       - name: 'Test: check wd content'
         run: ls -la
 
       - uses: actions/download-artifact@v3/node20
         with:
-          name: ${{ inputs.config-path }}-tfplan
+          name: ${{ inputs.environment }}-tfplan
       
       - name: 'Test: check file presence after download'
         run: ls -la

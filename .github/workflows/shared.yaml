@@ -1,10 +1,10 @@
 name: TF_EXECUTION
 
-on:
-  workflow_dispatch:
-    # TODO path to the data product for which we wish to launch the pipeline, if all projects stay in the 
-    # same repository
-    inputs:
+# on:
+#   workflow_dispatch:
+#     # TODO path to the data product for which we wish to launch the pipeline, if all projects stay in the 
+#     # same repository
+#     inputs:
 
 # Uncomment to automatically create workflow on each push
 on:

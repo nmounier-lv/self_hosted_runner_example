@@ -1,24 +1,33 @@
 name: TF_EXECUTION
 
 on:
-  workflow_call:
+  workflow_dispatch:
+    # TODO path to the data product for which we wish to launch the pipeline, if all projects stay in the 
+    # same repository
     inputs:
-      environment:
-        description: |
-          Environment: relative path to the folder containing the tfvars file and
-          backend config file, and GH environment in the repository
-        required: true
-        type: string
+
+# on:
+#   workflow_call:
+#     inputs:
+#       environment:
+#         description: |
+#           Environment: relative path to the folder containing the tfvars file and
+#           backend config file, and GH environment in the repository
+#         required: true
+#         type: string
 
 env:
-  TGENV_AUTO_INSTALL: true
-  TFENV_AUTO_INSTALL: true
+  # TGENV_AUTO_INSTALL: true
+  # TFENV_AUTO_INSTALL: true
   # TF_GH_USER: ${{ secrets.TF_GH_USER }}
   # TF_GH_PAT: ${{ secrets.TF_GH_PAT }}
 
 jobs:
   TF_PLAN:
     name: TF_PLAN | GENERATE TFPLAN FILE, VALIDATE & SAVE
+    strategy:
+      matrix:
+        environment: [poc, dev]
     # Run on Self-Runner developed and hosted by LV_NEO
     runs-on: self-hosted
 
@@ -75,6 +84,9 @@ jobs:
 
   TF_APPLY:
     name: 'TF_APPLY | APPLY SAVED TFPLAN'
+    strategy:
+      matrix:
+        environment: [poc, dev]
     needs: TF_PLAN
     environment: ${{ inputs.environment }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
     runs-on: self-hosted

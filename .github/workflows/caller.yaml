@@ -9,9 +9,7 @@ jobs:
   terraform:
     strategy:
       matrix:
-        target:
-          - environment: [poc, dev]
+        environment: [poc, dev]
     uses: ./.github/workflows/shared.yaml
     with:
-      config-path: ${{ matrix.target.config-path }}
-      gh-env:  ${{ matrix.target.gh-env }}
+      environment: ${{ matrix.environment }}

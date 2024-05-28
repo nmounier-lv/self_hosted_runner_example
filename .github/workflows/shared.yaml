@@ -23,11 +23,11 @@ on:
 #         required: true
 #         type: string
 
-env:
-  # TGENV_AUTO_INSTALL: true
-  # TFENV_AUTO_INSTALL: true
-  # TF_GH_USER: ${{ secrets.TF_GH_USER }}
-  # TF_GH_PAT: ${{ secrets.TF_GH_PAT }}
+# env:
+#   TGENV_AUTO_INSTALL: true
+#   TFENV_AUTO_INSTALL: true
+#   TF_GH_USER: ${{ secrets.TF_GH_USER }}
+#   TF_GH_PAT: ${{ secrets.TF_GH_PAT }}
 
 jobs:
   TF_PLAN:
@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: tf init
-        run: terraform init -reconfigure -backend-config=${{ inputs.environment }}/config.gcs.tfbackend
+        run: terraform init -reconfigure -backend-config=${{ matrix.environment }}/config.gcs.tfbackend
       
       - name: 'Test: check wd content'
         run: ls -la
@@ -68,7 +68,7 @@ jobs:
         id: tf-plan
         run: |
           export exitcode=0
-          terraform plan --var-file=./${{ inputs.environment }}/terraform.tfvars -detailed-exitcode -out ${{ inputs.environment }}/tfplan || export exitcode=$?
+          terraform plan --var-file=./${{ matrix.environment }}/terraform.tfvars -detailed-exitcode -out ${{ matrix.environment }}/tfplan || export exitcode=$?
 
           echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
 
@@ -85,8 +85,8 @@ jobs:
       - name: Upload Terraform Plan file (tfplan) to gh artifacts store
         uses: actions/upload-artifact@v3/node20
         with:
-          name: ${{ inputs.environment }}-tfplan
-          path: ${{ inputs.environment }}/tfplan
+          name: ${{ matrix.environment }}-tfplan
+          path: ${{ matrix.environment }}/tfplan
 
 
   TF_APPLY:
@@ -95,7 +95,7 @@ jobs:
       matrix:
         environment: [poc, dev]
     needs: TF_PLAN
-    environment: ${{ inputs.environment }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
+    environment: ${{ matrix.environment }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
     runs-on: self-hosted
 
     steps:
@@ -105,14 +105,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: tf init
-        run: terraform init -reconfigure -backend-config=${{ inputs.environment }}/config.gcs.tfbackend
+        run: terraform init -reconfigure -backend-config=${{ matrix.environment }}/config.gcs.tfbackend
 
       - name: 'Test: check wd content'
         run: ls -la
 
       - uses: actions/download-artifact@v3/node20
         with:
-          name: ${{ inputs.environment }}-tfplan
+          name: ${{ matrix.environment }}-tfplan
       
       - name: 'Test: check file presence after download'
         run: ls -la

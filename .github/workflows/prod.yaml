@@ -6,7 +6,7 @@ on:
     branches:
       - master
     types:
-      - ready_for_review
+      - synchronize
 
 jobs:
   plan_prd:

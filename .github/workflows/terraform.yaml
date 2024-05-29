@@ -12,6 +12,18 @@ on:
       - synchronize
 
 jobs:
+  # Info
+  workflow_info:
+    # Run on Self-Runner developed and hosted by LV_NEO
+    runs-on: self-hosted
+    steps:
+      - name: Context
+        run: |
+          echo github.base_ref: ${{ github.base_ref }}
+          echo github.ref: ${{ github.ref }}
+          echo github.ref_name: ${{ github.ref_name }}
+          echo github.head_ref: ${{ github.head_ref }}
+
   # NPD
   plan_poc:
     uses: ./.github/workflows/plan.yaml

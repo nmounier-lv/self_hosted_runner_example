@@ -12,9 +12,9 @@ jobs:
   plan_prd:
     uses: ./.github/workflows/plan.yaml
     with:
-      environment: prp
+      environment: prd
   apply_prd:
     uses: ./.github/workflows/apply.yaml
-    needs: plan_prdd
+    needs: plan_prd
     with:
       environment: prd

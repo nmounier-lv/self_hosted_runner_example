@@ -64,12 +64,12 @@ jobs:
 
   # PRD
   plan_prd:
-    if: github.base_ref == 'refs/heads/master'
+    if: github.base_ref == 'master'
     uses: ./.github/workflows/plan.yaml
     with:
       environment: prd
   apply_prd:
-    if: github.base_ref == 'refs/heads/master'
+    if: github.base_ref == 'master'
     uses: ./.github/workflows/apply.yaml
     needs: plan_prd
     with:

@@ -4,8 +4,15 @@ on:
   push:
     branches:
       - feature/*
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - master
+    types:
+      - synchronize
 
 jobs:
+  # NPD
   plan_poc:
     uses: ./.github/workflows/plan.yaml
     with:
@@ -42,3 +49,16 @@ jobs:
     needs: plan_prp
     with:
       environment: prp
+
+  # PRD
+  plan_prd:
+    if: github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: prd
+  apply_prd:
+    if: github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_prd
+    with:
+      environment: prd

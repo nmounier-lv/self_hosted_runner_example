@@ -1,0 +1,20 @@
+name: PRD
+
+on:
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - master
+    types:
+      - ready_for_review
+
+jobs:
+  plan_prd:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: prp
+  apply_prd:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_prdd
+    with:
+      environment: prd

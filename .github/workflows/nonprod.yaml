@@ -1,4 +1,4 @@
-name: TF_CALLER
+name: NON_PROD
 # on:
 #   workflow_dispatch:
 #     # TODO path to the data product for which we wish to launch the pipeline
@@ -12,24 +12,41 @@ name: TF_CALLER
 on:
   push:
     branches:
-      - master
       - feature/*
 jobs:
-  plan_dev:
-    uses: ./.github/workflows/plan.yaml
-    with:
-      environment: dev
-  apply_dev:
-    uses: ./.github/workflows/apply.yaml
-    needs: plan_dev
-    with:
-      environment: dev
   plan_poc:
     uses: ./.github/workflows/plan.yaml
     with:
       environment: poc
+  plan_dev:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: dev
+  plan_int:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: int
+  plan_prp:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: prp
   apply_poc:
     uses: ./.github/workflows/apply.yaml
     needs: plan_poc
     with:
       environment: poc
+  apply_dev:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_dev
+    with:
+      environment: dev
+  apply_int:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_int
+    with:
+      environment: int
+  apply_prp:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_prp
+    with:
+      environment: prp

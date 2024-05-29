@@ -1,14 +1,10 @@
 name: NON_PROD
 
 on:
-  workflow_dispatch:
-    inputs:      
-
-# Uncomment to automatically create workflow on each push
-on:
   push:
     branches:
       - feature/*
+
 jobs:
   plan_poc:
     uses: ./.github/workflows/plan.yaml

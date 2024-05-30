@@ -7,6 +7,6 @@ service_accounts = [
   },
   {
     suffix                     = "test4"
-    description                = "Service account 3"
+    description                = "Service account 3 test"
   },
 ]

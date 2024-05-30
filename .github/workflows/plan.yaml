@@ -1,5 +1,5 @@
-name: TF_EXECUTION
-
+# Reusable workflow for plan
+name: plan
 on:
   workflow_call:
     inputs:
@@ -9,12 +9,6 @@ on:
           backend config file, and GH environment in the repository
         required: true
         type: string
-
-env:
-  TGENV_AUTO_INSTALL: true
-  TFENV_AUTO_INSTALL: true
-  # TF_GH_USER: ${{ secrets.TF_GH_USER }}
-  # TF_GH_PAT: ${{ secrets.TF_GH_PAT }}
 
 jobs:
   # TF_PLAN | GENERATE TFPLAN FILE, VALIDATE & SAVE
@@ -72,43 +66,3 @@ jobs:
         with:
           name: ${{ inputs.environment }}-tfplan
           path: ${{ inputs.environment }}/tfplan
-
-  # TF_APPLY | APPLY SAVED TFPLAN
-  TF_APPLY:
-    name: apply
-    needs: TF_PLAN
-    environment: ${{ inputs.environment }} # Protection rules on the environment are applied to the job (like requesting a review before launching the job)
-    runs-on: self-hosted
-
-    steps:
-
-      # Checkout
-      - name: Checkout the repository from remote to local
-        uses: actions/checkout@v4
-
-      - name: tf init
-        run: terraform init -reconfigure -backend-config=${{ inputs.environment }}/config.gcs.tfbackend
-
-      - name: 'Test: check wd content'
-        run: ls -la
-
-      - uses: actions/download-artifact@v3/node20
-        with:
-          name: ${{ inputs.environment }}-tfplan
-      
-      - name: 'Test: check file presence after download'
-        run: ls -la
-
-      - name: 'Test: read tfplan exit code'
-        env:
-          OUTPUT1: ${{needs.TF_PLAN.outputs.tfplanExitCode}}
-        run: echo "$OUTPUT1"
-
-      - name: 'Test: run apply with the downloaded tfplan'
-        run: terraform apply -auto-approve tfplan
-
-      # TODO: log in GCP
-      # - name: Log in GCP
-      #   uses:
-      #   with:
-      #     creds: '${{ secrets.TF_AZ_CREDS_PRJ }}'

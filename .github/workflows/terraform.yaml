@@ -1,0 +1,76 @@
+name: tf_pipeline
+
+on:
+  push:
+    branches:
+      - feature/*
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - master
+    types:
+      - synchronize
+
+jobs:
+  # Info
+  workflow_info:
+    # Run on Self-Runner developed and hosted by LV_NEO
+    runs-on: self-hosted
+    steps:
+      - name: Context
+        run: |
+          echo github.base_ref: ${{ github.base_ref }}
+          echo github.ref: ${{ github.ref }}
+          echo github.ref_name: ${{ github.ref_name }}
+          echo github.head_ref: ${{ github.head_ref }}
+
+  # NPD
+  plan_poc:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: poc
+  plan_dev:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: dev
+  plan_int:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: int
+  plan_prp:
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: prp
+  apply_poc:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_poc
+    with:
+      environment: poc
+  apply_dev:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_dev
+    with:
+      environment: dev
+  apply_int:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_int
+    with:
+      environment: int
+  apply_prp:
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_prp
+    with:
+      environment: prp
+
+  # PRD
+  plan_prd:
+    if: github.base_ref == 'master'
+    uses: ./.github/workflows/plan.yaml
+    with:
+      environment: prd
+  apply_prd:
+    if: github.base_ref == 'master'
+    uses: ./.github/workflows/apply.yaml
+    needs: plan_prd
+    with:
+      environment: prd
